@@ -1,57 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import s from './ContactForm.module.css';
-export class ContactForm extends React.Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = event => {
+  const handleChange = event => {
     const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
-  };
-  handleSubmit = event => {
-    event.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
-  };
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        break;
+    }
   };
 
-  render() {
-    return (
-      <form className={s.form} onSubmit={this.handleSubmit}>
-        <label className={s.label}>
-          Name{' '}
-          <input
-            type="text"
-            name="name"
-            id={nanoid()}
-            required
-            value={this.state.name}
-            onChange={this.handleChange}
-          />
-        </label>
-        <label className={s.label}>
-          Number{' '}
-          <input
-            type="tel"
-            name="number"
-            required
-            id={nanoid()}
-            value={this.state.number}
-            onChange={this.handleChange}
-          />
-        </label>
-        <button className={s.form_btn} type="submit">
-          Add contact
-        </button>
-      </form>
-    );
-  }
-}
+  const handleSubmit = event => {
+    event.preventDefault();
+    onSubmit({ name: name, number: number });
+    reset();
+  };
+  const reset = () => {
+    setName('');
+    setNumber('');
+  };
+  return (
+    <form className={s.form} onSubmit={handleSubmit}>
+      <label className={s.label}>
+        Name{' '}
+        <input
+          type="text"
+          name="name"
+          id={nanoid()}
+          required
+          value={name}
+          onChange={handleChange}
+        />
+      </label>
+      <label className={s.label}>
+        Number{' '}
+        <input
+          type="tel"
+          name="number"
+          required
+          id={nanoid()}
+          value={number}
+          onChange={handleChange}
+        />
+      </label>
+      <button className={s.form_btn} type="submit">
+        Add contact
+      </button>
+    </form>
+  );
+};
